@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منشئ الكتب الرسمية - تصميم محمد صبري</title>
+    <!-- استيراد خطوط عربية كلاسيكية وخطوط Google Fonts المتنوعة -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&family=Tajawal:wght@400;500;700&family=Reem+Kufi:wght@400;700&family=Changa:wght@400;700&family=Scheherazade+New:wght@400;700&family=Lateef&family=Katibeh&family=Aref+Ruqaa:wght@400;700&family=Harmattan:wght@400;700&family=Readex+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1b4332;
+            --secondary-color: #2d6a4f;
+            --bg-color: #f4f6f9;
+            --paper-bg: #ffffff;
+            --text-color: #212529;
+            --header-font: 'Amiri', serif;
+            --body-font: 'Amiri', serif;
+            --font-size: 16px;
+            --line-height: 1.8;
+            --header-weight: normal;
+            --body-weight: normal;
+            --paper-border: 4px double #000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--body-font);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            direction: rtl;
+            padding: 15px;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        /* شريط الإجراءات العلوي العام */
+        .top-action-bar {
+            display: flex;
+            background: #ffffff;
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .top-title {
+            font-weight: 900;
+            color: #8b0000;
+            font-size: 1.2rem;
+        }
+
+        .top-action-bar .action-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-orientation {
+            background-color: #3a86ff !important;
+            color: white;
+            border: none;
+            padding: 9px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-orientation:hover { background-color: #2667cc !important; }
+
+        .btn-print {
+            background-color: #fb8500 !important;
+            color: white;
+            border: none;
+            padding: 9px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-print:hover { background-color: #d97000 !important; }
+
+        .btn-pdf {
+            background-color: #7209b7 !important;
+            color: white;
+            border: none;
+            padding: 9px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-pdf:hover { background-color: #560790 !important; }
+
+        /* شريط التنقل بين المراحل الثلاث مع تلوين الأزرار */
+        .stages-nav {
+            display: flex;
+            background: #ffffff;
+            padding: 8px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            gap: 10px;
+        }
+
+        .stage-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* ألوان مخصصة لكل مرحلة لتمييزها بوضوح */
+        .stage-btn-1 {
+            background: #e3f2fd;
+            color: #0d47a1;
+            border: 1px solid #90caf9;
+        }
+        .stage-btn-1:hover { background: #bbdefb; }
+
+        .stage-btn-2 {
+            background: #e8f5e9;
+            color: #1b5e20;
+            border: 1px solid #a5d6a7;
+        }
+        .stage-btn-2:hover { background: #c8e6c9; }
+
+        .stage-btn-3 {
+            background: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffb74d;
+        }
+        .stage-btn-3:hover { background: #ffe0b2; }
+
+        .stage-btn.active {
+            color: #ffffff !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transform: translateY(-1px);
+        }
+        #stageBtn1.active { background: #0d47a1 !important; border-color: #0d47a1; }
+        #stageBtn2.active { background: #1b5e20 !important; border-color: #1b5e20; }
+        #stageBtn3.active { background: #e65100 !important; border-color: #e65100; }
+
+        .workspace {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        /* لوحة التحكم الجانبية */
+        .control-panel {
+            width: 450px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            max-height: 75vh;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .stage-content {
+            display: none;
+        }
+
+        .stage-content.active {
+            display: block;
+        }
+
+        .control-group label, .control-panel h3 {
+            color: #ff0000 !important;
+            font-weight: bold !important;
+        }
+
+        .control-group {
+            margin-bottom: 12px;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+
+        .control-group input, .control-group select, .control-group textarea {
+            width: 100%;
+            padding: 7px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: #212529;
+        }
+
+        .control-group textarea {
+            resize: vertical;
+            min-height: 65px;
+        }
+
+        .row-group-3 {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            align-items: flex-end;
+        }
+        .row-group-3 > div {
+            flex: 1;
+        }
+
+        .row-table-dims {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .row-table-dims > div {
+            flex: 1;
+        }
+
+        .row-bismillah-logo {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .row-bismillah-logo > div {
+            flex: 1;
+        }
+
+        .hide-buttons-row {
+            display: flex;
+            gap: 6px;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            margin-bottom: 15px;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-weight: bold;
+            font-size: 0.75rem;
+            color: #ff0000 !important;
+            cursor: pointer;
+        }
+
+        .checkbox-group input {
+            width: auto;
+        }
+
+        .row-inputs {
+            display: flex;
+            gap: 10px;
+        }
+        .row-inputs > div {
+            flex: 1;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 9px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn:hover { background-color: var(--secondary-color); }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 9px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-secondary:hover { background-color: #5a6268; }
+
+        /* زر تفريغ الجدول */
+        .btn-clear {
+            background-color: #d90429 !important;
+            color: white;
+            border: none;
+            padding: 7px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+        .btn-clear:hover { background-color: #b7031f !important; }
+
+        /* حاوية الورقة */
+        .paper-wrapper {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: auto;
+            width: 100%;
+            padding: 10px;
+        }
+
+        .paper {
+            width: 210mm;
+            min-height: 297mm;
+            background: var(--paper-bg);
+            padding: 15mm 20mm;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative;
+            font-size: var(--font-size);
+            line-height: var(--line-height);
+            font-weight: var(--body-weight);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: var(--paper-border);
+            margin-bottom: 8px;
+            transition: width 0.3s ease, min-height 0.3s ease;
+        }
+
+        .paper.landscape {
+            width: 297mm;
+            min-height: 210mm;
+        }
+
+        /* ترويسة الورقة */
+        .paper-header {
+            position: relative;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+        }
+
+        .bismillah {
+            text-align: center;
+            font-family: var(--header-font);
+            font-size: calc(var(--font-size) + 4px);
+            font-weight: var(--header-weight);
+            margin-bottom: 5px;
+            min-height: 35px;
+        }
+
+        .header-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 85px;
+            font-family: var(--header-font);
+            font-weight: var(--header-weight);
+        }
+
+        .header-right {
+            text-align: right;
+            font-size: var(--font-size);
+            line-height: 1.5;
+            width: 33%;
+            white-space: pre-wrap;
+        }
+
+        .header-center {
+            text-align: center;
+            width: 34%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80px;
+        }
+
+        .header-logo {
+            width: 75px;
+            height: 75px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .header-left {
+            text-align: left;
+            font-size: calc(var(--font-size) - 1px);
+            line-height: 1.6;
+            width: 33%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .meta-line {
+            display: inline-block;
+            width: 100%;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        /* محتوى الكتاب */
+        .paper-body {
+            flex-grow: 1;
+            margin-bottom: 20px;
+            font-family: var(--body-font);
+        }
+
+        .subject-line {
+            font-weight: var(--body-weight);
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: calc(var(--font-size) + 2px);
+            width: 100%;
+        }
+
+        .greeting {
+            margin-bottom: 15px;
+            font-weight: var(--body-weight);
+        }
+
+        .main-text {
+            text-align: justify;
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+            font-weight: var(--body-weight);
+        }
+
+        .custom-table-container {
+            margin: 20px 0;
+            overflow: auto;
+            resize: both;
+            border: 1px dashed #aaa;
+            padding: 5px;
+        }
+
+        table.document-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-family: var(--body-font);
+        }
+
+        table.document-table th, table.document-table td {
+            border: 1px solid #000;
+            padding: 8px 12px;
+            text-align: center;
+            outline: none;
+            min-width: 60px;
+            resize: horizontal;
+            overflow: hidden;
+        }
+
+        /* توقيع المدير */
+        .signature-wrapper {
+            display: flex;
+            width: 100%;
+        }
+        .paper[data-sig-pos="left"] .signature-wrapper { justify-content: flex-end; }
+        .paper[data-sig-pos="center"] .signature-wrapper { justify-content: center; }
+        .paper[data-sig-pos="right"] .signature-wrapper { justify-content: flex-start; }
+
+        .signature-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-top: 20px;
+            width: 280px;
+            font-family: var(--header-font);
+            font-weight: var(--header-weight);
+        }
+
+        .manager-title-box {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .manager-name-box {
+            width: 100%;
+            font-size: calc(var(--font-size) + 2px);
+        }
+
+        /* قواعد طباعة متقدمة لإخفاء حدود تحريك الجدول وأزراره تماماً عند الطباعة أو حفظ PDF */
+        @media print {
+            body {
+                background: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .top-action-bar, .stages-nav, .control-panel {
+                display: none !important;
+            }
+            .paper-wrapper {
+                display: block !important;
+                padding: 0 !important;
+                background: none !important;
+                width: 100% !important;
+            }
+            .paper {
+                box-shadow: none !important;
+                margin: 0 !important;
+                width: 100% !important;
+                min-height: 100vh !important;
+                border: var(--paper-border) !important;
+                page-break-after: always;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            /* إخفاء حدود الحاوية المتقطعة وأداة التحريك أثناء الطباعة */
+            .custom-table-container {
+                border: none !important;
+                resize: none !important;
+                padding: 0 !important;
+                overflow: visible !important;
+            }
+            /* إزالة مؤشرات تغيير الحجم الخاصة بالخلايا أثناء الطباعة */
+            table.document-table th, table.document-table td {
+                resize: none !important;
+            }
+            @page {
+                size: portrait;
+                margin: 0mm;
+            }
+            .paper.landscape {
+                width: 100% !important;
+                min-height: 100vh !important;
+            }
+            .paper.landscape ~ @page, 
+            body:has(.paper.landscape) @page {
+                size: landscape;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- شريط الإجراءات العلوي العام -->
+    <div class="top-action-bar">
+        <span class="top-title">منشئ الكتب الرسمية - تصميم محمد صبري</span>
+        <div class="action-group">
+            <button class="btn-orientation" onclick="toggleOrientation()">
+                📄 تبديل اتجاه الورقة (عمودي / أفقي)
+            </button>
+            <button class="btn-print" onclick="window.print()">
+                🖨️ طباعة الورقة
+            </button>
+            <button class="btn-pdf" onclick="saveAsPDF()">
+                💾 حفظ PDF
+            </button>
+        </div>
+    </div>
+
+    <!-- شريط التنقل بين المراحل الثلاث مع إضافة الكلاسات الملونة -->
+    <div class="stages-nav">
+        <button id="stageBtn1" class="stage-btn stage-btn-1 active" onclick="switchStage(1)">المرحلة الأولى: الترويسة والبيانات</button>
+        <button id="stageBtn2" class="stage-btn stage-btn-2" onclick="switchStage(2)">المرحلة الثانية: محتوى الكتاب والجدول</button>
+        <button id="stageBtn3" class="stage-btn stage-btn-3" onclick="switchStage(3)">المرحلة الثالثة: الخطوط والتباعد والإطارات</button>
+    </div>
+
+    <div class="workspace">
+        <!-- لوحة التحكم -->
+        <div class="control-panel">
+            
+            <!-- محتوى المرحلة الأولى -->
+            <div id="stage1" class="stage-content active">
+                <div class="hide-buttons-row">
+                    <label class="checkbox-group"><input type="checkbox" id="hideBismillah" onchange="toggleElement('outputBismillah', this.checked)"> إخفاء البسملة</label>
+                    <label class="checkbox-group"><input type="checkbox" id="hideLogo" onchange="toggleElement('outputLogo', this.checked)"> إخفاء الشعار</label>
+                    <label class="checkbox-group"><input type="checkbox" id="hideSchoolAdmin" onchange="toggleElement('outputSchoolAdmin', this.checked)"> إخفاء الإدارة</label>
+                    <label class="checkbox-group"><input type="checkbox" id="hideMeta" onchange="toggleElement('outputMeta', this.checked)"> إخفاء العدد والتاريخ</label>
+                    <label class="checkbox-group"><input type="checkbox" id="convertNumCheck" onchange="toggleArabicNumbers(this.checked)"> تحويل الأرقام</label>
+                </div>
+
+                <div class="row-bismillah-logo">
+                    <div class="control-group">
+                        <label>البسملة</label>
+                        <input type="text" id="inputBismillah" value="بسم الله الرحمن الرحيم">
+                    </div>
+                    <div class="control-group">
+                        <label>تغيير / رفع الشعار</label>
+                        <input type="file" id="uploadLogo" accept="image/*">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>إدارة المدرسة (جهة اليمين)</label>
+                    <textarea id="inputSchoolAdmin">أدارة مدرســـــــــة
+الأئمة المعصومين
+الابتدائيـــــة للبنين</textarea>
+                </div>
+
+                <div class="row-inputs">
+                    <div class="control-group">
+                        <label>العدد</label>
+                        <input type="text" id="inputNumber" value="العدد : ">
+                    </div>
+                    <div class="control-group">
+                        <label>التاريخ</label>
+                        <input type="text" id="inputDate" value="التاريخ : ٢٠٢٦ / ١٠ / ٥">
+                    </div>
+                </div>
+
+                <div class="row-group-3" style="align-items: flex-end;">
+                    <div class="control-group">
+                        <label>المسمى الوظيفي</label>
+                        <input type="text" id="inputManagerTitle" value="المــــدير">
+                    </div>
+                    <div class="control-group">
+                        <label>اسم المدير</label>
+                        <input type="text" id="inputManagerName" value="محمــود غــانم ســلطان">
+                    </div>
+                    <div class="control-group">
+                        <label>موضع التوقيع</label>
+                        <select id="selectSigAlign" onchange="updateSignatureAlign(this.value)">
+                            <option value="left" selected>يسار</option>
+                            <option value="center">متوسط</option>
+                            <option value="right">يمين</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="switchStage(2)" style="width:100%; margin-top:10px;">الانتقال إلى المرحلة الثانية</button>
+            </div>
+
+            <!-- محتوى المرحلة الثانية -->
+            <div id="stage2" class="stage-content">
+                <div class="hide-buttons-row">
+                    <label class="checkbox-group"><input type="checkbox" id="hideSubject" onchange="toggleElement('outputSubject', this.checked)"> إخفاء الموضوع</label>
+                    <label class="checkbox-group"><input type="checkbox" id="hideGreeting" onchange="toggleElement('outputGreeting', this.checked)"> إخفاء التحية</label>
+                </div>
+
+                <div class="control-group">
+                    <label>الموضوع (يظهر في المنتصف تماماً)</label>
+                    <input type="text" id="inputSubject" value="م / انقطاع معلم">
+                </div>
+                <div class="control-group">
+                    <label>التحية</label>
+                    <input type="text" id="inputGreeting" value="تحية طيبة :">
+                </div>
+                <div class="control-group">
+                    <label>متن الكتاب</label>
+                    <textarea id="inputMainText">نود اعلامكم ان السيد (علي حسن مكي) انقطع عن الدوام الرسمي ليوم الاربعاء المصادف 5 / 10 / 2026 وذلك لتفضلكم بالعلم والاطلاع مع الشكر والتقدير.</textarea>
+                </div>
+
+                <div class="control-group" style="display: flex; gap: 10px; align-items: center;">
+                    <label class="checkbox-group" style="flex: 1;"><input type="checkbox" id="toggleTable" onchange="toggleTableDisplay()"> إظهار الجدول</label>
+                    <button class="btn-clear" onclick="clearTableData()">🗑️ تفريغ الجدول</button>
+                </div>
+
+                <div id="tableControls" style="display: none;">
+                    <div class="row-table-dims">
+                        <div class="control-group">
+                            <label>عدد الصفوف (أقصى 25)</label>
+                            <input type="number" id="inputRows" value="3" min="1" max="25" onchange="generateTable()">
+                        </div>
+                        <div class="control-group">
+                            <label>عدد الأعمدة (أقصى 25)</label>
+                            <input type="number" id="inputCols" value="3" min="1" max="25" onchange="generateTable()">
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px; margin-top: 8px;">
+                        <button class="btn-secondary" style="flex:1; font-size:0.8rem; padding:6px;" onclick="sortTableData('alpha')">🔤 ترتيب أبجدي</button>
+                        <button class="btn-secondary" style="flex:1; font-size:0.8rem; padding:6px;" onclick="sortTableData('numeric')">🔢 ترتيب تسلسلي</button>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="switchStage(3)" style="width:100%; margin-top:10px;">الانتقال إلى المرحلة الثالثة</button>
+            </div>
+
+            <!-- محتوى المرحلة الثالثة -->
+            <div id="stage3" class="stage-content">
+                <div class="row-group-3">
+                    <div class="control-group">
+                        <label>خط الترويسة</label>
+                        <select id="selectHeaderFont" onchange="updateCustomStyle('--header-font', this.value)">
+                            <option value="'Amiri', serif" selected>Amiri (أميری رسمي)</option>
+                            <option value="'Aref Ruqaa', serif">خط الرقعة</option>
+                            <option value="'Harmattan', serif">خط النسخ الحديث</option>
+                            <option value="'Cairo', sans-serif">Cairo</option>
+                            <option value="'Tajawal', sans-serif">Tajawal</option>
+                            <option value="'Reem Kufi', sans-serif">Reem Kufi (كوفي)</option>
+                            <option value="'Changa', sans-serif">Changa</option>
+                            <option value="'Lateef', serif">Lateef</option>
+                            <option value="'Katibeh', serif">Katibeh</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>حجم الترويسة</label>
+                        <select id="selectFontSize" onchange="updateCustomStyle('--font-size', this.value)">
+                            <option value="14px">14</option>
+                            <option value="16px" selected>16</option>
+                            <option value="18px">18</option>
+                            <option value="20px">20</option>
+                            <option value="22px">22</option>
+                            <option value="24px">24</option>
+                            <option value="26px">26</option>
+                            <option value="28px">28</option>
+                            <option value="30px">30</option>
+                        </select>
+                    </div>
+                    <div class="control-group" style="display:flex; align-items:center; height:38px;">
+                        <label class="checkbox-group" style="font-size:0.85rem;">
+                            <input type="checkbox" id="headerBoldCheck" onchange="toggleWeight('header', this.checked)"> تغليظ الترويسة
+                        </label>
+                    </div>
+                </div>
+
+                <div class="row-group-3">
+                    <div class="control-group">
+                        <label>خط المحتوى</label>
+                        <select id="selectBodyFont" onchange="updateCustomStyle('--body-font', this.value)">
+                            <option value="'Amiri', serif" selected>Amiri (أميری رسمي)</option>
+                            <option value="'Aref Ruqaa', serif">خط الرقعة</option>
+                            <option value="'Harmattan', serif">خط النسخ الحديث</option>
+                            <option value="'Cairo', sans-serif">Cairo</option>
+                            <option value="'Tajawal', sans-serif">Tajawal</option>
+                            <option value="'Reem Kufi', sans-serif">Reem Kufi (كوفي)</option>
+                            <option value="'Changa', sans-serif">Changa</option>
+                            <option value="'Lateef', serif">Lateef</option>
+                            <option value="'Katibeh', serif">Katibeh</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>حجم المحتوى</label>
+                        <select onchange="updateCustomStyle('--font-size', this.value)">
+                            <option value="14px">14</option>
+                            <option value="16px" selected>16</option>
+                            <option value="18px">18</option>
+                            <option value="20px">20</option>
+                            <option value="22px">22</option>
+                            <option value="24px">24</option>
+                            <option value="26px">26</option>
+                            <option value="28px">28</option>
+                            <option value="30px">30</option>
+                        </select>
+                    </div>
+                    <div class="control-group" style="display:flex; align-items:center; height:38px;">
+                        <label class="checkbox-group" style="font-size:0.85rem;">
+                            <input type="checkbox" id="bodyBoldCheck" onchange="toggleWeight('body', this.checked)"> تغليظ المحتوى
+                        </label>
+                    </div>
+                </div>
+
+                <div class="row-group-3">
+                    <div class="control-group">
+                        <label>تباعد الأسطر</label>
+                        <select onchange="updateCustomStyle('--line-height', this.value)">
+                            <option value="1.4">ضيق (1.4)</option>
+                            <option value="1.8" selected>عادي (1.8)</option>
+                            <option value="2.2">واسع (2.2)</option>
+                            <option value="2.6">واسع جداً (2.6)</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>إطار الورقة</label>
+                        <select onchange="updateCustomStyle('--paper-border', this.value)">
+                            <option value="4px double #000" selected>إطار مزدوج ثخين جداً (افتراضي)</option>
+                            <option value="4px solid #000">إطار مفرد عريض وثخين</option>
+                            <option value="6px solid #1b4332">إطار أخضر غامق ثخين</option>
+                            <option value="3px ridge #8b0000">إطار أحمر داكن مجوف بارز</option>
+                            <option value="5px groove #333">إطار غائر ثلاثي الأبعاد</option>
+                            <option value="2px dashed #000">إطار متقطع رفيع</option>
+                            <option value="none">بدون إطار</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn-secondary" style="width:100%; margin-top:10px;" onclick="switchStage(1)">العودة للمرحلة الأولى</button>
+            </div>
+
+        </div>
+
+        <!-- عرض الورقة التفاعلية -->
+        <div class="paper-wrapper">
+            <div class="paper" id="paperElement" data-sig-pos="left">
+                <div>
+                    <!-- الترويسة -->
+                    <div class="paper-header">
+                        <div class="bismillah" id="outputBismillah">بسم الله الرحمن الرحيم</div>
+                        <div class="header-grid">
+                            <div class="header-right" id="outputSchoolAdmin">أدارة مدرســـــــــة
+الأئمة المعصومين
+الابتدائيـــــة للبنين</div>
+                            <div class="header-center">
+                                <img id="outputLogo" class="header-logo" src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Emblem_of_Iraq_%28Ministry_of_Education%29.svg" alt="شعار وزارة التربية">
+                            </div>
+                            <div class="header-left" id="outputMeta">
+                                <div id="outputNumber" class="meta-line">العدد : </div>
+                                <div id="outputDate" class="meta-line">التاريخ : ٢٠٢٦ / ١٠ / ٥</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- المتن -->
+                    <div class="paper-body">
+                        <div class="subject-line" id="outputSubject">م / انقطاع معلم</div>
+                        <div class="greeting" id="outputGreeting">تحية طيبة :</div>
+                        <div class="main-text" id="outputMainText">نود اعلامكم ان السيد (علي حسن مكي) انقطع عن الدوام الرسمي ليوم الاربعاء المصادف 5 / 10 / 2026 وذلك لتفضلكم بالعلم والاطلاع مع الشكر والتقدير.</div>
+                        
+                        <!-- مكان الجدول -->
+                        <div id="tableContainer" class="custom-table-container" style="display: none;">
+                            <table id="dynamicTable" class="document-table">
+                                <!-- سيتم توليد الجدول هنا برمجياً -->
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <!-- توقيع المدير -->
+                    <div class="signature-wrapper">
+                        <div class="signature-section">
+                            <div class="manager-title-box" id="outputManagerTitle">المــــدير</div>
+                            <div class="manager-name-box" id="outputManagerName">محمــود غــانم ســلطان</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let originalTexts = {
+        number: "العدد : ",
+        date: "التاريخ : 5 / 10 / 2026",
+        mainText: "نود اعلامكم ان السيد (علي حسن مكي) انقطع عن الدوام الرسمي ليوم الاربعاء المصادف 5 / 10 / 2026 وذلك لتفضلكم بالعلم والاطلاع مع الشكر والتقدير."
+    };
+
+    function switchStage(stageNum) {
+        document.querySelectorAll('.stage-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.stage-btn').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById(`stage${stageNum}`).classList.add('active');
+        document.getElementById(`stageBtn${stageNum}`).classList.add('active');
+    }
+
+    const bindLiveUpdate = (inputId, outputId, key) => {
+        const input = document.getElementById(inputId);
+        const output = document.getElementById(outputId);
+        input.addEventListener('input', () => {
+            if(key) originalTexts[key] = input.value;
+            output.textContent = input.value;
+        });
+    };
+
+    bindLiveUpdate('inputBismillah', 'outputBismillah');
+    bindLiveUpdate('inputSchoolAdmin', 'outputSchoolAdmin');
+    bindLiveUpdate('inputNumber', 'outputNumber', 'number');
+    bindLiveUpdate('inputDate', 'outputDate', 'date');
+    bindLiveUpdate('inputSubject', 'outputSubject');
+    bindLiveUpdate('inputGreeting', 'outputGreeting');
+    bindLiveUpdate('inputMainText', 'outputMainText', 'mainText');
+    bindLiveUpdate('inputManagerTitle', 'outputManagerTitle');
+    bindLiveUpdate('inputManagerName', 'outputManagerName');
+
+    function updateSignatureAlign(alignVal) {
+        const paper = document.getElementById('paperElement');
+        paper.setAttribute('data-sig-pos', alignVal);
+    }
+
+    function toggleElement(elementId, hide) {
+        if (elementId === 'outputMeta') {
+            document.getElementById('outputNumber').style.visibility = hide ? 'hidden' : 'visible';
+            document.getElementById('outputDate').style.visibility = hide ? 'hidden' : 'visible';
+        } else if (elementId === 'outputLogo') {
+            const logo = document.getElementById('outputLogo');
+            logo.style.visibility = hide ? 'hidden' : 'visible';
+        } else if (elementId === 'outputBismillah') {
+            const bism = document.getElementById('outputBismillah');
+            bism.style.visibility = hide ? 'hidden' : 'visible';
+        } else if (elementId === 'outputSchoolAdmin') {
+            const admin = document.getElementById('outputSchoolAdmin');
+            admin.style.visibility = hide ? 'hidden' : 'visible';
+        } else if (elementId === 'outputSubject') {
+            const subj = document.getElementById('outputSubject');
+            subj.style.display = hide ? 'none' : 'block';
+        } else if (elementId === 'outputGreeting') {
+            const greet = document.getElementById('outputGreeting');
+            greet.style.display = hide ? 'none' : 'block';
+        }
+    }
+
+    document.getElementById('uploadLogo').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const logoImg = document.getElementById('outputLogo');
+                logoImg.src = event.target.result;
+                logoImg.style.visibility = 'visible';
+                document.getElementById('hideLogo').checked = false;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function toggleArabicNumbers(activate) {
+        const englishToArabic = {'0':'٠','1':'١','2':'٢','3':'٣','4':'٤','5':'٥','6':'٦','7':'٧','8':'٨','9':'٩'};
+        const arabicToEnglish = {'٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9'};
+        
+        const translate = (text, map) => text.replace(/[0-9٠-٩]/g, match => map[match] || match);
+
+        ['inputNumber', 'inputDate', 'inputMainText'].forEach((id, idx) => {
+            const el = document.getElementById(id);
+            const keys = ['number', 'date', 'mainText'];
+            let currentBase = originalTexts[keys[idx]];
+
+            if (activate) {
+                el.value = translate(currentBase, englishToArabic);
+            } else {
+                el.value = translate(currentBase, arabicToEnglish);
+                originalTexts[keys[idx]] = el.value;
+            }
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+    }
+
+    function updateCustomStyle(property, value) {
+        const paper = document.getElementById('paperElement');
+        paper.style.setProperty(property, value);
+    }
+
+    function toggleWeight(type, isBold) {
+        const paper = document.getElementById('paperElement');
+        if (type === 'header') {
+            paper.style.setProperty('--header-weight', isBold ? 'bold' : 'normal');
+        } else if (type === 'body') {
+            paper.style.setProperty('--body-weight', isBold ? 'bold' : 'normal');
+        }
+    }
+
+    function toggleOrientation() {
+        const paper = document.getElementById('paperElement');
+        paper.classList.toggle('landscape');
+    }
+
+    function saveAsPDF() {
+        const subjectVal = document.getElementById('inputSubject').value.trim() || "كتاب_رسمي";
+        const safeFileName = subjectVal.replace(/[/\\?%*:|"<>]/g, '_') + '.pdf';
+        
+        const oldTitle = document.title;
+        document.title = safeFileName;
+        window.print();
+        document.title = oldTitle;
+    }
+
+    function toggleTableDisplay() {
+        const show = document.getElementById('toggleTable').checked;
+        document.getElementById('tableControls').style.display = show ? 'block' : 'none';
+        document.getElementById('tableContainer').style.display = show ? 'block' : 'none';
+        if (show) generateTable();
+    }
+
+    function generateTable() {
+        let rows = parseInt(document.getElementById('inputRows').value) || 1;
+        let cols = parseInt(document.getElementById('inputCols').value) || 1;
+        if(rows > 25) rows = 25;
+        if(cols > 25) cols = 25;
+
+        const table = document.getElementById('dynamicTable');
+        let html = '';
+        
+        for (let i = 0; i < rows; i++) {
+            html += '<tr>';
+            for (let j = 0; j < cols; j++) {
+                if (i === 0) {
+                    html += `<th contenteditable="true">حقل ${j+1}</th>`;
+                } else {
+                    html += `<td contenteditable="true">بيان ${i},${j+1}</td>`;
+                }
+            }
+            html += '</tr>';
+        }
+        table.innerHTML = html;
+    }
+
+    function clearTableData() {
+        const table = document.getElementById('dynamicTable');
+        if (!table) return;
+        const cells = table.querySelectorAll('th, td');
+        cells.forEach(cell => {
+            cell.innerText = "";
+        });
+    }
+
+    function sortTableData(type) {
+        const table = document.getElementById('dynamicTable');
+        if (!table || table.rows.length <= 1) return;
+        
+        let rowsArray = Array.from(table.rows);
+        let headerRow = rowsArray.shift();
+
+        rowsArray.sort((a, b) => {
+            let valA = a.cells[0].innerText.trim();
+            let valB = b.cells[0].innerText.trim();
+            if (type === 'alpha') {
+                return valA.localeCompare(valB, 'ar');
+            } else {
+                return (parseFloat(valA) || 0) - (parseFloat(valB) || 0);
+            }
+        });
+
+        table.innerHTML = "";
+        table.appendChild(headerRow);
+        rowsArray.forEach(row => table.appendChild(row));
+    }
+</script>
+
+</body>
+</html>
